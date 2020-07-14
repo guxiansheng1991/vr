@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>triangle</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+ 
+        canvas {
+            border: 3px solid blue;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<canvas id="triangle" width="800" height="600"></canvas>
+<script type="text/javascript" src="../libs/webgl-utils.js"></script>
+<script type="text/javascript" src="../libs/shader.js"></script>
+<script id="vertex-shader" type="x-shader/x-vertex">
+      attribute vec4 a_position;
+      void main() {
+          gl_Position = a_position;
+      }
+ </script>
+ 
+ <script id="fragment-shader" type="x-shader/x-fragment">
+      precision mediump float;//将精度设置为中等精度
+      void main() {
+          gl_FragColor = vec4(1, 0, 0.5, 1);
+      }
+ </script>
+<script type="text/javascript">
+let canvas = document.getElementById('triangle');
+let gl = canvas.getContext('webgl', {antialias: true, depth: false});
+if (!gl) {
+    console.log("您的浏览器不支持webgl！");
+}
+//获取GLSL文本
+let vShaderSource = document.getElementById('vertex-shader').text;
+let fShaderSource = document.getElementById('fragment-shader').text;
+//创建、编译和链接着色器
+let program = initShader(gl, vShaderSource, fShaderSource);
+let positionAttributeLocation = gl.getAttribLocation(program, 'a_position');
+//创建缓冲区
+let positionBuffer = gl.createBuffer();
+ 
+ //将它绑定到ARRAY_BUFFER（将其视为ARRAY_BUFFER = positionBuffer）
+ //绑定缓冲区
+ gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+ 
+ //三个顶点构成一个三角形
+  let positions = [
+       -0.25, 0,
+        0, 0.5,
+        0.25, 0
+      ];
+ 
+//通过绑定点向缓冲区绑定数据
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+
+ 
+ //设置视口
+ gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+ 
+ //清除canvas
+ gl.clearColor(0, 0, 0, 1);//设置背景颜色
+ gl.clear(gl.COLOR_BUFFER_BIT);
+ 
+ //应用着色器
+ gl.useProgram(program);
+ 
+ //建立着色器中attribute变量与缓冲区之间的连接
+ gl.enableVertexAttribArray(positionAttributeLocation);
+ const size = 2;//2维坐标：每次迭代运行提取两个单位数据
+ const type = gl.FLOAT;//每个单位的数据类型是32位浮点型
+ const normalize = false;//不需要归一化数据
+ const stride = 0;//每次迭代前进大小* sizeof（类型）以获得下一个位置
+ const offset1 = 0;//从缓冲起始位置开始读取
+ 
+ //从缓冲区取出数据
+  gl.vertexAttribPointer(positionAttributeLocation, size, type, normalize, stride, offset1);
+ 
+  let primitiveType = gl.TRIANGLES;//绘制三角形
+  let offset2 = 0;//从第一个顶点开始
+  let count = 3;//画图所顶点次数
+  gl.drawArrays(primitiveType, offset2, count);//画图
+
+//声明初始化着色器函数
+function initShader(gl,vertexShaderSource,fragmentShaderSource){
+    //创建顶点着色器对象
+    var vertexShader = gl.createShader(gl.VERTEX_SHADER);
+    //创建片元着色器对象
+    var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+    //引入顶点、片元着色器源代码
+    gl.shaderSource(vertexShader,vertexShaderSource);
+    gl.shaderSource(fragmentShader,fragmentShaderSource);
+    //编译顶点、片元着色器
+    gl.compileShader(vertexShader);
+    gl.compileShader(fragmentShader);
+    //创建程序对象program
+    var program = gl.createProgram();
+    //附着顶点着色器和片元着色器到program
+    gl.attachShader(program,vertexShader);
+    gl.attachShader(program,fragmentShader);
+    //链接program
+    gl.linkProgram(program);
+    //使用program
+    gl.useProgram(program);
+    //返回程序program对象
+    return program;
+}
+
+
+</script>
+</body>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>webgl 点的绘制</title>
+</head>
+
+<body onload="main()" style="padding: 0; margin: 0;">
+    <canvas id="webgl" width="600" height="400">
+        您使用的浏览器不支持 WebGL！
+    </canvas>
+    <script src="./webgl-util.js"></script>
+    <script>
+        function main() {
+            const canvas = document.getElementById('webgl');
+            const gl = canvas.getContext('webgl');
+
+            // 顶点着色器
+            const VertexShader = `
+                attribute vec4 a_Position;
+                void main() {
+                    gl_Position = a_Position;
+                    gl_PointSize = 10.0;
+                }
+            `;
+            // 片元着色器
+            const FragmentShader = `
+                void main() {
+                    gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
+                }
+            `;
+
+            const flag = initShaders(gl, VertexShader, FragmentShader);
+            if (!flag) {
+                alert('初始化着色器失败');
+                return;
+            }
+
+            gl.clearColor(0.0, 0.0, 0.0, 1.0);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+
+            // const a_Position = gl.getAttribLocation(gl.program, 'a_Position');
+            // gl.vertexAttrib3f(a_Position, 0.0, 0.0, 0.0);
+
+            const vertices = new Float32Array([
+                0.0, 0.5,
+                -0.5, -0.5,
+                0.5, -0.5,
+            ]);
+            // const vertexBuffer = gl.createBuffer();
+            // gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+            // gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+            // const a_Position = gl.getAttribLocation(gl.program, 'a_Position');
+            // gl.enableVertexAttribArray(a_Position);
+            // gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
+            addPoint(gl, vertices);
+
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 3);
+        }
+
+
+    </script>
+</body>
+
+</html>

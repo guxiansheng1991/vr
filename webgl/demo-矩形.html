@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>webgl 矩形的绘制</title>
+</head>
+<html>
+
+<body onload="main()">
+    <canvas id="webgl" width="500" height="500" style="border: 1px solid #ff0000;"></canvas>
+
+    <script src="./webgl-util.js"></script>
+    <script id="vertex-shader" type="x-shader/x-vertex">
+        attribute vec4 a_Position;
+        void main() {
+            gl_Position = a_Position;
+        }
+    </script>
+    <script id="fragment-shader" type="x-shader/x-fragment">
+        void main() {
+            gl_FragColor = vec4(1, 0, 0.5, 1);
+        }
+    </script>
+    <script type="text/javascript">
+        function main() {
+            const canvas = document.getElementById('webgl');
+            const gl = canvas.getContext('webgl');
+            const vShaderSource = document.getElementById('vertex-shader').text;
+            const fShaderSource = document.getElementById('fragment-shader').text;
+            const flag = initShaders(gl, vShaderSource, fShaderSource);
+            if (!flag) {
+                alert('初始化着色器失败');
+                return;
+            }
+            const data = new Float32Array([0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5]);
+            addPoint(gl, data);
+            gl.drawArrays(gl.LINE_LOOP, 0, 4);
+        }
+    </script>
+</body>
+
+</html>
