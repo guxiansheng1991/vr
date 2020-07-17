@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>three.js - pointerlock controls</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link type="text/css" rel="stylesheet" href="./three/examples/main.css">
+</head>
+
+<body>
+
+	<script type="module">
+
+		import * as THREE from './three/build/three.module.js';
+		import { OrbitControls } from './three/examples/jsm/controls/OrbitControls.js';
+
+		// 新建threejs的场景
+		const scene = new THREE.Scene();
+		// 新建相机
+		const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
+		camera.position.set(0, 100, 300);
+		camera.lookAt(new THREE.Vector3(0, 0, 0))
+		// 新建渲染器
+		const renderer = new THREE.WebGLRenderer();
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		document.body.appendChild(renderer.domElement);
+
+		// 用于鼠标控制
+		const controls = new OrbitControls( camera, renderer.domElement );
+
+		// 新建立方体
+		const skyBoxGeometry = new THREE.BoxGeometry(100, 100, 100);
+		// 立方体材质纹理, 就是为立方体表面设置图片
+		const texture = new THREE.TextureLoader().load("./刘亦菲.jpg");
+		const skyBoxMaterial = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
+		// 网格, 这里就是指立方体
+		const skyBox = new THREE.Mesh(skyBoxGeometry, skyBoxMaterial);
+		// 场景中加入网格
+		scene.add(skyBox);
+
+		// 开始动画
+		function animate() {
+			// requestAnimationFrame有很多的优点。最重要的一点或许就是当用户切换到其它的标签页时，它会暂停，因此不会浪费用户宝贵的处理器资源，也不会损耗电池的使用寿命。
+			requestAnimationFrame( animate );
+			// skyBox.rotation.x += 0.01;
+			// skyBox.rotation.y += 0.01;
+			renderer.render(scene, camera);
+		}
+		animate();
+	</script>
+</body>
+
+</html>

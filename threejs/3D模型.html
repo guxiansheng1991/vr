@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>加载3D模型</title>
+</head>
+
+<body>
+    <script type="module">
+        import * as THREE from './three/build/three.module.js';
+        import { GLTFLoader } from './three/examples/jsm/loaders/GLTFLoader.js';
+        var loader = new THREE.GLTFLoader();
+        loader.load('./scene.gltf', function (gltf) {
+            scene.add(gltf.scene);
+        }, undefined, function (error) {
+            console.error(error);
+        });
+    </script>
+</body>
+
+</html>

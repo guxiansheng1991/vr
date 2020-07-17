@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>矩形贴图</title>
+</head>
+<body>
+</body>
+<script type="module">
+    import * as THREE from './three/build/three.module.js';
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 100, 300);
+    camera.lookAt(new THREE.Vector3(0, 0, 0))
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // 创建video对象
+    let video = document.createElement('video');
+    video.src = "./video.mp4"; // 设置视频地址
+    video.autoplay = "autoplay"; //要设置播放
+    // video对象作为VideoTexture参数创建纹理对象
+    var texture = new THREE.VideoTexture(video)
+    var geometry = new THREE.PlaneGeometry(108, 71); //矩形平面
+    var material = new THREE.MeshPhongMaterial({
+        map: texture, // 设置纹理贴图
+    }); //材质对象Material
+    var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
+    scene.add(mesh); //网格模型添加到场景中
+    function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+    }
+    animate();
+</script>
+</html>

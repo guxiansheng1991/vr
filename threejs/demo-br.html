@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vr</title>
+</head>
+<body>
+</body>
+<!-- <script src="./three.js"></script> -->
+<script type="module">
+    import * as THREE from './three/build/three.module.js';
+    import { VRButton } from './three/examples/jsm/webxr/VRButton.js';
+    // 创建场景
+    const scene = new THREE.Scene();
+    // 创建摄像机
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    // 创建渲染器
+    const renderer = new THREE.WebGLRenderer();
+    // 设置渲染器尺寸
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    // 将渲染器的dom元素添加到html文档中
+    document.body.appendChild(renderer.domElement);
+    document.body.appendChild( VRButton.createButton( renderer ) );
+    renderer.xr.enabled = true;
+
+    // 添加立方体
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    // 获取材料
+    const meterial = new THREE.MeshBasicMaterial({color: 0x00ff00});
+    // 网格
+    const cube = new THREE.Mesh(geometry, meterial);
+    // 场景中新增包含立方体和材料的网格
+    scene.add(cube);
+    camera.position.z = 3;
+
+    function animate() {
+        // requestAnimationFrame有很多的优点。最重要的一点或许就是当用户切换到其它的标签页时，它会暂停，因此不会浪费用户宝贵的处理器资源，也不会损耗电池的使用寿命。
+        requestAnimationFrame(animate);
+        cube.rotation.x += 0.01;
+        cube.rotation.y += 0.01;
+        renderer.render(scene, camera);
+    }
+    // animate();
+
+    renderer.setAnimationLoop( function () {
+        renderer.render( scene, camera );
+    } );
+</script>
+</html>

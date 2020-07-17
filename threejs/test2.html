@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>three.js - pointerlock controls</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link type="text/css" rel="stylesheet" href="./three/examples/main.css">
+</head>
+
+<body>
+    <script src="./three/build/three.js"></script>
+    <script src="./three/examples/js/Detector.js"></script>
+    <script src="./three/examples/js/libs/dat.gui.min.js"></script>
+    <script src="./three/examples/js/libs/stats.min.js"></script>
+    <script src="./three/examples/js/controls/OrbitControls.js"></script>
+    <script src="./three/examples/js/loaders/GLTFLoader.js"></script>
+	<script>
+
+		// 新建threejs的场景
+		const scene = new THREE.Scene();
+		// 新建相机
+		const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
+		camera.position.set(0, 100, 300);
+		camera.lookAt(new THREE.Vector3(0, 0, 0))
+		// 新建渲染器
+		const renderer = new THREE.WebGLRenderer();
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		document.body.appendChild(renderer.domElement);
+
+		// 用于鼠标控制
+		const controls = new THREE.OrbitControls( camera, renderer.domElement );
+
+		// // 新建立方体
+		// const skyBoxGeometry = new THREE.BoxGeometry(100, 100, 100);
+		// // 立方体材质纹理, 就是为立方体表面设置图片
+		// const texture = new THREE.TextureLoader().load("./刘亦菲.jpg");
+		// const skyBoxMaterial = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
+		// // 网格, 这里就是指立方体
+		// const skyBox = new THREE.Mesh(skyBoxGeometry, skyBoxMaterial);
+		// // 场景中加入网格
+        // scene.add(skyBox);
+        
+        // 加载 glTF 格式的模型
+        let loader = new THREE.GLTFLoader();/*实例化加载器*/
+        loader.load('./three/examples/models/gltf/BoomBox/glTF/BoomBox.gltf',function (obj) {
+            console.log(obj);
+            obj.scene.position.y = 1;
+            scene.add(obj.scene);
+        },function (xhr) {
+            console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+        },function (error) {
+            console.log('load error!'+error.getWebGLErrorMessage());
+        })
+
+		// 开始动画
+		function animate() {
+			requestAnimationFrame( animate );
+            renderer.render(scene, camera);
+            // stats.update();
+		}
+		animate();
+	</script>
+</body>
+
+</html>
